@@ -1,39 +1,42 @@
 package com.fansheng.everythingjavafx;
 
+import javafx.scene.image.ImageView;
+
 import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
         try {
-            // 1. 加载图片
-            File inputFile = new File(Main.class.getClassLoader().getResource("dir_img.png").getPath()); // 输入图片路径
-            BufferedImage image = ImageIO.read(inputFile);
+            ImageView imageView = new ImageView();
+//        fitHeight="30.0" fitWidth="30.0" layoutX="7.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true"
+//        layoutX="45.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0"
 
-            // 2. 创建 Graphics2D 对象
+
+//        imageView.setImage(new Image(String.valueOf(this.getClass().getClassLoader().getResource("dir_img.png"))));
+            FileSystemView fsv = FileSystemView.getFileSystemView();
+            Icon icon = fsv.getSystemIcon(new File("C:\\Program Files\\Tencent\\WeChat"));
+            // 创建 BufferedImage
+            BufferedImage image = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+
+            // 获取 Graphics2D 对象并绘制 Icon
             Graphics2D g2d = image.createGraphics();
-
-            // 3. 设置中文字体
-            Font font = new Font("黑体", Font.BOLD, 36);
-            g2d.setFont(font);
-            g2d.setColor(Color.RED); // 设置字体颜色
-
-            // 4. 绘制中文文本
-            String text = "你好，世界！"; // 要绘制的中文文本
-            int x = 0; // 文本的 x 坐标
-            int y = 36; // 文本的 y 坐标
-            g2d.drawString(text, x, y);
-
-            // 5. 释放资源
+            icon.paintIcon(null, g2d, 0, 0);
             g2d.dispose();
 
-            // 6. 保存结果图片
-            File outputFile = new File("output.png"); // 输出图片路径
-            ImageIO.write(image, "png", outputFile);
+            // 保存 BufferedImage 为 PNG
+            File outputFile = new File("C:\\Users\\Public\\Desktop\\wx1.png");
 
-            System.out.println("图片处理完成，保存到：" + outputFile.getAbsolutePath());
+            try {
+                ImageIO.write(image, "png", outputFile);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
